@@ -35,8 +35,9 @@ colors = Colors()  # create instance for 'from utils.plots import colors'
 
 class Yolo5Detector():
     def __init__(self,weights,imgsz=(640, 640),device="cpu"):
-        device = select_device("")
-        self.model = DetectMultiBackend(weights, device=device, dnn=False,fp16=False)
+        self.setted_device = device
+        self.device = select_device(device)
+        self.model = DetectMultiBackend(weights, device=self.device, dnn=False,fp16=False)
         self.stride, self.names, self.pt = self.model.stride, self.model.names, self.model.pt
         self.imgsz = check_img_size(imgsz, s=self.stride)  # check image size
         self.img_size = imgsz[0]
@@ -54,8 +55,10 @@ class Yolo5Detector():
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
         bs = 1  # batch_size
-
-        im = torch.from_numpy(img).to(0)
+            
+        im = torch.from_numpy(img)
+        if self.setted_device != "cpu":
+            im = im.to(0)
         im = im.half() if self.model.fp16 else im.float()  # uint8 to fp16/32
         im /= 255  # 0 - 255 to 0.0 - 1.0
         if len(im.shape) == 3:

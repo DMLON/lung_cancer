@@ -18,7 +18,7 @@ from yolov5_model import Yolo5Detector
 
 @st.cache(allow_output_mutation=True)
 def load_model():
-    model = Yolo5Detector("best.pt")
+    model = Yolo5Detector("best.pt",device="cpu")
     return model
 
 model = load_model()

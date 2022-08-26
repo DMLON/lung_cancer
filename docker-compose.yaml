@@ -4,4 +4,5 @@ services:
       dockerfile: ./Dockerfile
       context: ./
     ports:
-      - "8081:8501"
+      - 25565:8501
+    command: streamlit run app.py --server.fileWatcherType none
